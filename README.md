@@ -25,3 +25,10 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+# Dynamic Form Builder (Angular + NgRx)
+
+This project is a dynamic form builder built using Angular. The goal was to make it easy for users to build custom forms through a drag-and-drop interface, preview them, and even allow others to fill them out — all without touching any code.
+
+I’ve added role-based access, so Admins can create/edit templates while normal Users can just fill out forms. The app saves templates and submissions locally (for now), but the structure allows for easy backend integration.
