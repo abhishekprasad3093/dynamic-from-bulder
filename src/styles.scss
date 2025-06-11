@@ -1,1 +1,177 @@
-/* You can add global styles to this file, and also import other style files */
+
+body {
+    background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-attachment: fixed;
+    background-size: cover;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .light-theme {
+    background: #f0f2f5;
+    color: #111;
+  }
+  
+  .dark-theme {
+    background: #1e1e2f;
+    color: #eee;
+  }
+  
+  .card, .navbar, .form-control, .btn {
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  }
+  
+  .light-theme .card {
+    background-color: #fff;
+    color: #111;
+  }
+  
+  .dark-theme .card {
+    background-color: #2e2e3e;
+    color: #eee;
+  }
+  
+  .light-theme .navbar {
+    background-color: #ffffff !important;
+    color: #000;
+  }
+  
+  .dark-theme .navbar {
+    background-color: #333 !important;
+    color: #fff;
+  }
+  
+  .light-theme .btn {
+    border-color: #000;
+  }
+  
+  .dark-theme .btn {
+    border-color: #fff;
+  }
+  
+.light-theme .navbar {
+    background-color: #ffffff !important;
+    color: #000;
+  }
+  
+  .light-theme .navbar .nav-link,
+  .light-theme .navbar-brand {
+    color: #000 !important;
+  }
+  
+  .dark-theme .navbar {
+    background-color: #1e1e2f !important;
+    color: #fff;
+  }
+  
+  .dark-theme .navbar .nav-link,
+  .dark-theme .navbar-brand {
+    color: #fff !important;
+  }
+  
+
+.navbar {
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .light-theme .navbar {
+    background-color: #ffffff !important;
+    color: #000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .light-theme .navbar .nav-link,
+  .light-theme .navbar-brand,
+  .light-theme .navbar span,
+  .light-theme .btn {
+    color: #000 !important;
+  }
+  
+  .light-theme .btn-outline-light {
+    color: #000 !important;
+    border-color: #000 !important;
+  }
+  
+  .dark-theme .navbar {
+    background-color: #1e1e2f !important;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(255,255,255,0.1);
+  }
+  
+  .dark-theme .navbar .nav-link,
+  .dark-theme .navbar-brand,
+  .dark-theme .navbar span,
+  .dark-theme .btn {
+    color: #fff !important;
+  }
+  
+  .dark-theme .btn-outline-dark {
+    color: #fff !important;
+    border-color: #fff !important;
+  }
+  
+  .navbar .btn:hover {
+    opacity: 0.85;
+  }
+
+.light-theme body {
+  background: linear-gradient(to right, #fceabb, #f8b500);
+  background-attachment: fixed;
+  background-size: cover;
+  color: #000;
+}
+
+.light-theme body {
+  background: linear-gradient(to right, #a8e063, #56ab2f); /* green to teal */
+  background-attachment: fixed;
+  background-size: cover;
+  color: #000;
+}
+
+/* General Light Theme Overrides */
+.light-theme .card,
+.light-theme .container,
+.light-theme .form-control,
+.light-theme .btn {
+  background-color: #ffffff;
+  color: #000;
+  border-color: #ccc;
+}
+
+.light-theme .form-control:focus {
+  border-color: #56ab2f;
+  box-shadow: 0 0 6px rgba(86, 171, 47, 0.5);
+}
+
+/* Navbar Visibility Fixes in Light Mode */
+.light-theme .navbar {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: #000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.light-theme .navbar .nav-link,
+.light-theme .navbar-brand,
+.light-theme .navbar span,
+.light-theme .btn {
+  color: #000 !important;
+}
+
+.light-theme .btn-outline-light {
+  color: #000 !important;
+  border-color: #000 !important;
+}

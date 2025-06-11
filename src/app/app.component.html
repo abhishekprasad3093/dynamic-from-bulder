@@ -1,17 +1,36 @@
-<nav *ngIf="role" class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-  <a class="navbar-brand" href="#">Dynamic Form Builder</a>
+<div class="container">
+  <nav *ngIf="role" class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <a class="navbar-brand" href="#">Dynamic Form Builder</a>
 
-  <ul class="navbar-nav me-auto">
-    <li class="nav-item" *ngIf="role === 'admin'">
-      <a class="nav-link" routerLink="/forms/builder">Builder</a>
-    </li>
-    <li class="nav-item" *ngIf="role === 'admin'">
-      <a class="nav-link" routerLink="/forms/view-submissions">View Submissions</a>
-    </li>
-  </ul>
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item" *ngIf="role === 'admin'">
+        <a class="nav-link" routerLink="/forms/builder">Builder</a>
+      </li>
+      <li class="nav-item" *ngIf="role === 'admin'">
+        <a class="nav-link" routerLink="/forms/view-submissions"
+          >View Submissions</a
+        >
+      </li>
+    </ul>
+    <div>
+      <span class="text-light me-3"
+        >Logged in as
+        <strong>{{ role == "admin" ? "Admin" : "User" }}</strong></span
+      >
+      <button class="btn btn-outline-light btn-sm me-2" (click)="logout()">
+        Logout
+      </button>
+      <button
+        class="btn btn-outline-light btn-sm ms-auto"
+        (click)="toggleTheme()"
+        [ngClass]="theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'"
+      >
+        <i
+          [ngClass]="theme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill'"
+        ></i>
+      </button>
+    </div>
+  </nav>
 
-  <span class="text-light me-3">Logged in as <strong>{{ role }}</strong></span>
-  <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
-</nav>
-
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
+</div>

@@ -1,7 +1,7 @@
 <div class="container-fluid mt-3">
   <div class="row">
     <!-- Toolbox -->
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="isAdmin">
       <div class="card">
         <div class="card-header">Form Toolbox</div>
         <div class="card-body"
@@ -32,7 +32,7 @@
                     [disabled]="formFields.length === 0">
               Fill Form
             </button>
-            <button class="btn btn-outline-danger btn-sm" (click)="clearForm()">
+            <button class="btn btn-outline-danger btn-sm" (click)="clearForm()"  *ngIf="isAdmin">
               Clear Form
             </button>
           </div>
@@ -51,13 +51,13 @@
                   <label>Label</label>
                   <input class="form-control" type="text"
                          [(ngModel)]="field.label"
-                         (ngModelChange)="updateField(field, 'label', $event, i)" />
+                         (ngModelChange)="updateField(field, 'label', $event, i)" [disabled]="!isAdmin" />
                 </div>
                 <div class="col-md-6">
                   <label>Help Text</label>
                   <input class="form-control" type="text"
                          [(ngModel)]="field.helpText"
-                         (ngModelChange)="updateField(field, 'helpText', $event, i)" />
+                         (ngModelChange)="updateField(field, 'helpText', $event, i)" [disabled]="!isAdmin" />
                 </div>
               </div>
 
@@ -66,19 +66,19 @@
                   <label>Required</label>
                   <input class="form-check-input ms-2" type="checkbox"
                          [(ngModel)]="field.required"
-                         (ngModelChange)="updateField(field, 'required', $event, i)" />
+                         (ngModelChange)="updateField(field, 'required', $event, i)" [disabled]="!isAdmin" />
                 </div>
                 <div class="col-md-3">
                   <label>Min Length</label>
                   <input class="form-control" type="number"
                          [(ngModel)]="field.minLength"
-                         (ngModelChange)="updateField(field, 'minLength', $event, i)" />
+                         (ngModelChange)="updateField(field, 'minLength', $event, i)" [disabled]="!isAdmin" />
                 </div>
                 <div class="col-md-3">
                   <label>Max Length</label>
                   <input class="form-control" type="number"
                          [(ngModel)]="field.maxLength"
-                         (ngModelChange)="updateField(field, 'maxLength', $event, i)" />
+                         (ngModelChange)="updateField(field, 'maxLength', $event, i)" [disabled]="!isAdmin" />
                 </div>
               </div>
 
@@ -86,11 +86,11 @@
                 <label>Options (comma separated)</label>
                 <input class="form-control" type="text"
                        [(ngModel)]="field.optionsRaw"
-                       (ngModelChange)="updateField(field, 'optionsRaw', $event, i)" />
+                       (ngModelChange)="updateField(field, 'optionsRaw', $event, i)" [disabled]="!isAdmin" />
               </div>
 
               <div class="text-end">
-                <button class="btn btn-sm btn-danger" (click)="removeField(i)">Remove</button>
+                <button class="btn btn-sm btn-danger" (click)="removeField(i)" *ngIf="isAdmin">Remove</button>
               </div>
             </div>
           </div>

@@ -30,6 +30,7 @@ export class BuilderComponent implements OnInit {
 
   formFields$: Observable<FormField[]>;
   formFields: FormField[] = [];
+  isAdmin: boolean | null = false
 
   constructor(
     public store: Store<AppState>,
@@ -40,6 +41,7 @@ export class BuilderComponent implements OnInit {
 
   ngOnInit(): void {
     const stored = localStorage.getItem('formFields');
+    this.isAdmin = localStorage.getItem('userRole') === 'admin' ? true : false;
     if (stored) {
       this.store.dispatch(setFields({ fields: JSON.parse(stored) }));
     }

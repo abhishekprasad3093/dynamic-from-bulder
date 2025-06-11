@@ -26,8 +26,6 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('formFields');
-    this.store.dispatch(setFields({ fields: [] }));
     localStorage.clear();
     sessionStorage.clear();
     this.roleSubject.next(null);
