@@ -37,4 +37,8 @@ export class AppComponent {
     classList.remove('light-theme', 'dark-theme');
     classList.add(`${this.theme}-theme`);
   }
+
+  isLoginRoute(): boolean {
+    return this.router.url === '/login';
+  }
 }
