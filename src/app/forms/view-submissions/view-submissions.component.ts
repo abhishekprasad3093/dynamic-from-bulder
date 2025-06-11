@@ -17,7 +17,6 @@ export class ViewSubmissionsComponent implements OnInit {
     this.formFields = storedFields ? JSON.parse(storedFields) : [];
     this.submissions = storedSubmissions ? JSON.parse(storedSubmissions) : [];
 
-    // Cache field names for *ngFor
     this.fieldNames = this.formFields.map(f => f.name);
   }
 

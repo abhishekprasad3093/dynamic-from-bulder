@@ -35,64 +35,56 @@ export class BuilderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Hydrate from localStorage on init
     const stored = localStorage.getItem('formFields');
     if (stored) {
-      const parsed = JSON.parse(stored);
-      this.store.dispatch(setFields({ fields: parsed }));
+      this.store.dispatch(setFields({ fields: JSON.parse(stored) }));
     }
 
-    this.formFields$.subscribe(fields => {
-      localStorage.setItem('formFields', JSON.stringify(fields));
-    });
+    // Persist every time formFields change
+    this.formFields$.subscribe(fields =>
+      localStorage.setItem('formFields', JSON.stringify(fields))
+    );
   }
 
-  onDropToBuilder(event: CdkDragDrop<any[]>) {
+  onDropToBuilder(event: CdkDragDrop<FormField[]>): void {
     if (event.previousContainer.id === 'toolbox' && event.container.id === 'formArea') {
-      const copiedField: FormField = {
-        ...event.previousContainer.data[event.previousIndex],
-        required: false,
+      const template = event.previousContainer.data[event.previousIndex] as FormField;
+      const field: FormField = {
+        ...template,
+        name: `field_${Date.now()}`,
         helpText: '',
-        optionsRaw: '',
-        options: [],
+        required: false,
         minLength: null,
         maxLength: null,
-        name: `field_${Date.now()}`
+        optionsRaw: template.options ? template.options.join(', ') : '',
+        options: template.options || []
       };
-
-      if (copiedField.type === 'dropdown' || copiedField.type === 'checkbox' || copiedField.type === 'radio') {
-        copiedField.optionsRaw = 'Option 1, Option 2, Option 3';
-        this.updateOptions(copiedField);
-      }
-
-      this.store.dispatch(addField({ field: copiedField }));
+      this.store.dispatch(addField({ field }));
     }
   }
 
-  updateOptions(field: FormField) {
-    if (field.optionsRaw && typeof field.optionsRaw === 'string') {
-      field.options = field.optionsRaw
-        .split(',')
-        .map(opt => opt.trim())
-        .filter(opt => opt);
-    } else {
-      field.options = [];
-    }
+  updateOptions(field: FormField): void {
+    field.options = field.optionsRaw
+      ? field.optionsRaw.split(',').map(o => o.trim()).filter(o => o)
+      : [];
   }
 
-  removeField(index: number) {
+  // Called any time you change label/helpText/required etc
+  updateField(index: number, field: FormField): void {
+    this.store.dispatch(updateField({ index, field }));
+  }
+
+  removeField(index: number): void {
     this.store.dispatch(removeField({ index }));
   }
 
-  previewForm() {
-    this.router.navigate(['/forms/preview']);
-  }
-
-  clearForm() {
+  clearForm(): void {
     this.store.dispatch(setFields({ fields: [] }));
     localStorage.removeItem('formFields');
   }
 
-  updateField(index: number, field: FormField) {
-    this.store.dispatch(updateField({ index, field }));
+  previewForm(): void {
+    this.router.navigate(['/forms/preview']);
   }
 }

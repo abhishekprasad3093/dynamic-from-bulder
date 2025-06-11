@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-fill',
   templateUrl: './fill.component.html',
-  styleUrls: ['./fill.component.scss']
 })
 export class FillComponent implements OnInit {
   formFields: any[] = [];
@@ -19,36 +18,32 @@ export class FillComponent implements OnInit {
     this.formFields = stored ? JSON.parse(stored) : [];
 
     const group: any = {};
-
-    this.formFields.forEach((field, i) => {
-      field.name = `field_${i}`;
-
+    this.formFields.forEach((f, i) => {
+      f.name = f.name!;
       const validators = [];
-      if (field.required) validators.push(Validators.required);
-      if (field.minLength) validators.push(Validators.minLength(field.minLength));
-      if (field.maxLength) validators.push(Validators.maxLength(field.maxLength));
+      if (f.required) validators.push(Validators.required);
+      if (f.minLength) validators.push(Validators.minLength(f.minLength));
+      if (f.maxLength) validators.push(Validators.maxLength(f.maxLength));
 
-      if (field.type === 'checkbox') {
-        this.checkboxValues[field.name] = [];
+      if (f.type === 'checkbox') {
+        this.checkboxValues[f.name] = [];
       } else {
-        group[field.name] = ['', validators];
+        group[f.name] = ['', validators];
       }
     });
 
     this.fillForm = this.fb.group(group);
   }
 
-  isChecked(fieldName: string, option: string): boolean {
-    return this.checkboxValues[fieldName]?.includes(option);
+  isChecked(name: string, opt: string): boolean {
+    return this.checkboxValues[name]?.includes(opt);
   }
 
-  toggleCheckbox(fieldName: string, option: string): void {
-    const current = this.checkboxValues[fieldName] || [];
-    if (current.includes(option)) {
-      this.checkboxValues[fieldName] = current.filter(o => o !== option);
-    } else {
-      this.checkboxValues[fieldName] = [...current, option];
-    }
+  toggleCheckbox(name: string, opt: string): void {
+    const arr = this.checkboxValues[name] || [];
+    this.checkboxValues[name] = arr.includes(opt)
+      ? arr.filter(x => x !== opt)
+      : [...arr, opt];
   }
 
   onSubmit(): void {
@@ -57,16 +52,14 @@ export class FillComponent implements OnInit {
       return;
     }
 
-    const filledData = { ...this.fillForm.value };
+    const data: any = { ...this.fillForm.value };
+    Object.keys(this.checkboxValues).forEach(name => {
+      data[name] = this.checkboxValues[name];
+    });
 
-    // Include checkbox group data manually
-    for (const fieldName in this.checkboxValues) {
-      filledData[fieldName] = this.checkboxValues[fieldName];
-    }
-
-    const previousSubmissions = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-    previousSubmissions.push(filledData);
-    localStorage.setItem('formSubmissions', JSON.stringify(previousSubmissions));
+    const subs = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+    subs.push(data);
+    localStorage.setItem('formSubmissions', JSON.stringify(subs));
 
     this.submitted = true;
     this.fillForm.reset();

@@ -3,8 +3,8 @@ export interface FormField {
     label: string;
     helpText?: string;
     required?: boolean;
-    minLength?: number;
-    maxLength?: number;
+    minLength?: number | null;
+    maxLength?: number | null;
     optionsRaw?: string;
     options?: string[];
     name?: string;

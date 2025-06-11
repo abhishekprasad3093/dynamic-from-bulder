@@ -10,7 +10,8 @@ import { AuthService } from 'src/app/core/auth.service';
 export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
-  login(role: 'admin' | 'user') {
+  login(role: 'admin' | 'user'): void {
+    console.log('Selected role:', role);
     this.authService.setRole(role);
     this.router.navigate(['/forms']);
   }
