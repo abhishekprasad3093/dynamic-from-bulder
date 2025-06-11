@@ -1,68 +1,75 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-fill',
-  templateUrl: './fill.component.html',
+  templateUrl: './fill.component.html'
 })
 export class FillComponent implements OnInit {
   formFields: any[] = [];
   fillForm!: FormGroup;
   checkboxValues: { [key: string]: string[] } = {};
-  submitted = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
     const stored = localStorage.getItem('formFields');
     this.formFields = stored ? JSON.parse(stored) : [];
 
     const group: any = {};
-    this.formFields.forEach((f, i) => {
-      f.name = f.name!;
-      const validators = [];
-      if (f.required) validators.push(Validators.required);
-      if (f.minLength) validators.push(Validators.minLength(f.minLength));
-      if (f.maxLength) validators.push(Validators.maxLength(f.maxLength));
+    this.formFields.forEach(field => {
+      const name = field.name ?? field.label?.toLowerCase().replace(/\s+/g, '_') ?? 'unnamed';
+      field.name = name;
 
-      if (f.type === 'checkbox') {
-        this.checkboxValues[f.name] = [];
+      if (!field.options && field.optionsRaw) {
+        field.options = field.optionsRaw.split(',').map((o: string) => o.trim());
+      }
+      if (!Array.isArray(field.options)) {
+        field.options = [];
+      }
+
+      const validators = [];
+      if (field.required) validators.push(Validators.required);
+      if (field.minLength) validators.push(Validators.minLength(field.minLength));
+      if (field.maxLength) validators.push(Validators.maxLength(field.maxLength));
+
+      if (field.type === 'checkbox-group') {
+        this.checkboxValues[name] = [];
       } else {
-        group[f.name] = ['', validators];
+        group[name] = new FormControl('', validators);
       }
     });
 
-    this.fillForm = this.fb.group(group);
+    this.fillForm = new FormGroup(group);
   }
 
-  isChecked(name: string, opt: string): boolean {
-    return this.checkboxValues[name]?.includes(opt);
-  }
-
-  toggleCheckbox(name: string, opt: string): void {
-    const arr = this.checkboxValues[name] || [];
-    this.checkboxValues[name] = arr.includes(opt)
-      ? arr.filter(x => x !== opt)
-      : [...arr, opt];
+  onCheckboxChange(fieldName: string, option: string, event: any): void {
+    const selected = this.checkboxValues[fieldName];
+    if (event.target.checked) {
+      selected.push(option);
+    } else {
+      const index = selected.indexOf(option);
+      if (index > -1) selected.splice(index, 1);
+    }
   }
 
   onSubmit(): void {
-    if (this.fillForm.invalid) {
-      this.fillForm.markAllAsTouched();
-      return;
-    }
+    if (this.fillForm.invalid) return;
 
-    const data: any = { ...this.fillForm.value };
-    Object.keys(this.checkboxValues).forEach(name => {
-      data[name] = this.checkboxValues[name];
+    const data = { ...this.fillForm.value };
+    Object.entries(this.checkboxValues).forEach(([key, val]) => {
+      data[key] = val;
     });
 
-    const subs = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
-    subs.push(data);
-    localStorage.setItem('formSubmissions', JSON.stringify(subs));
+    const existing = JSON.parse(localStorage.getItem('formSubmissions') || '[]');
+    existing.push(data);
+    localStorage.setItem('formSubmissions', JSON.stringify(existing));
+    alert('Form submitted!');
+    this.router.navigate(['/forms/view-submissions']);
+  }
 
-    this.submitted = true;
-    this.fillForm.reset();
-    this.checkboxValues = {};
+  goBack(): void {
+    this.router.navigate(['/forms/builder']);
   }
 }

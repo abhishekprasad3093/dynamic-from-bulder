@@ -22,29 +22,32 @@ export class BuilderComponent implements OnInit {
   availableFields = [
     { type: 'text', label: 'Single Line Text' },
     { type: 'textarea', label: 'Multi Line Text' },
-    { type: 'dropdown', label: 'Dropdown' },
-    { type: 'checkbox', label: 'Checkbox Group' },
-    { type: 'radio', label: 'Radio Group' },
+    { type: 'dropdown', label: 'Dropdown', options: ['Option 1', 'Option 2'] },
+    { type: 'checkbox', label: 'Checkbox Group', options: ['Check 1', 'Check 2'] },
+    { type: 'radio', label: 'Radio Group', options: ['Option A', 'Option B'] },
     { type: 'date', label: 'Date Picker' }
   ];
 
   formFields$: Observable<FormField[]>;
+  formFields: FormField[] = [];
 
-  constructor(private store: Store<AppState>, private router: Router) {
+  constructor(
+    public store: Store<AppState>,
+    private router: Router
+  ) {
     this.formFields$ = this.store.select(selectFormFields);
   }
 
   ngOnInit(): void {
-    // Hydrate from localStorage on init
     const stored = localStorage.getItem('formFields');
     if (stored) {
       this.store.dispatch(setFields({ fields: JSON.parse(stored) }));
     }
 
-    // Persist every time formFields change
-    this.formFields$.subscribe(fields =>
-      localStorage.setItem('formFields', JSON.stringify(fields))
-    );
+    this.formFields$.subscribe(fields => {
+      this.formFields = fields;
+      localStorage.setItem('formFields', JSON.stringify(fields));
+    });
   }
 
   onDropToBuilder(event: CdkDragDrop<FormField[]>): void {
@@ -64,15 +67,12 @@ export class BuilderComponent implements OnInit {
     }
   }
 
-  updateOptions(field: FormField): void {
-    field.options = field.optionsRaw
-      ? field.optionsRaw.split(',').map(o => o.trim()).filter(o => o)
-      : [];
-  }
-
-  // Called any time you change label/helpText/required etc
-  updateField(index: number, field: FormField): void {
-    this.store.dispatch(updateField({ index, field }));
+  updateField(field: FormField, key: keyof FormField, value: any, index: number): void {
+    const updated = { ...field, [key]: value };
+    if (key === 'optionsRaw') {
+      updated.options = value.split(',').map((o: string) => o.trim()).filter(Boolean);
+    }
+    this.store.dispatch(updateField({ index, field: updated }));
   }
 
   removeField(index: number): void {
@@ -86,5 +86,9 @@ export class BuilderComponent implements OnInit {
 
   previewForm(): void {
     this.router.navigate(['/forms/preview']);
+  }
+
+  fillForm(): void {
+    this.router.navigate(['/forms/fill']);
   }
 }

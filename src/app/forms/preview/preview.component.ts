@@ -1,45 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/state/app.state';
-import { FormField } from 'src/app/state/form/form.state';
-import { selectFormFields } from 'src/app/state/form/form.selectors';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-preview',
-  templateUrl: './preview.component.html',
-  styleUrls: ['./preview.component.scss']
+  templateUrl: './preview.component.html'
 })
 export class PreviewComponent implements OnInit {
-  formFields: FormField[] = [];
+  formFields: any[] = [];
   previewForm!: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<AppState>,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
-    // Subscribe to the store to get the latest formFields
-    this.store.select(selectFormFields).subscribe(fields => {
-      this.formFields = fields;
-      this.buildForm();
-    });
-  }
+    const stored = localStorage.getItem('formFields');
+    this.formFields = stored ? JSON.parse(stored) : [];
 
-  private buildForm(): void {
-    const group: { [key: string]: any } = {};
-    for (const field of this.formFields) {
-      const name = field.name!;
-      const validators = [];
-      if (field.required) validators.push(Validators.required);
-      if (field.minLength != null) validators.push(Validators.minLength(field.minLength));
-      if (field.maxLength != null) validators.push(Validators.maxLength(field.maxLength));
-      group[name] = ['', validators];
-    }
-    this.previewForm = this.fb.group(group);
+    const group: any = {};
+    this.formFields.forEach(field => {
+      const name = field.name ?? field.label?.toLowerCase().replace(/\s+/g, '_') ?? 'unnamed';
+      field.name = name;
+
+      if (!field.options && field.optionsRaw) {
+        field.options = field.optionsRaw.split(',').map((o: string) => o.trim());
+      }
+      if (!Array.isArray(field.options)) {
+        field.options = [];
+      }
+
+      group[name] = new FormControl({ value: '', disabled: true });
+    });
+
+    this.previewForm = new FormGroup(group);
   }
 
   goBack(): void {
