@@ -32,3 +32,21 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 This project is a dynamic form builder built using Angular. The goal was to make it easy for users to build custom forms through a drag-and-drop interface, preview them, and even allow others to fill them out — all without touching any code.
 
 I’ve added role-based access, so Admins can create/edit templates while normal Users can just fill out forms. The app saves templates and submissions locally (for now), but the structure allows for easy backend integration.
+
+
+
+# Part 2: Code Review Exercise
+
+Issue 1: Missing Authorization Token in API Requests-
+Both API calls (/user and /dashboard-items) are made without sending an Authorization token, despite the presence of getSessionToken() in ngOnInit. This violates both security practices and likely breaks compatibility with dashboard v3 APIs, which typically enforce authenticated access.
+
+Include the session token in the HTTP headers using HttpHeaders when making requests.
+
+Issue 2: Use of Template-Driven Forms Instead of Reactive Forms
+Despite importing FormBuilder, the component is using template-driven forms. This is inconsistent with the comment // TODO: JD - Refactor to reactive form next sprint, and violates the Team Orange standard, which prefers reactive forms for all new or refactored components.
+
+Replace the template-driven form with a proper Reactive Form setup using FormBuilder
+
+** Hardcoded URLs – Should ideally use an envi  ronment config service.
+** No Error Handling – Add error callbacks to .subscribe().
+** Direct DOM/global access (window.DEBUG = this) – Should be wrapped in a proper debug service.
