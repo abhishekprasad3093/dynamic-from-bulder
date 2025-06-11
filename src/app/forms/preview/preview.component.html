@@ -3,26 +3,24 @@
   <form [formGroup]="previewForm">
     <div *ngFor="let field of formFields" class="mb-3">
       <label class="form-label">{{ field.label }}</label>
+      <small *ngIf="field.helpText" class="form-text text-muted ms-2">{{ field.helpText }}</small>
 
       <input *ngIf="field.type === 'text'" class="form-control" [formControlName]="field.name" />
       <textarea *ngIf="field.type === 'textarea'" class="form-control" [formControlName]="field.name"></textarea>
       <input *ngIf="field.type === 'date'" type="date" class="form-control" [formControlName]="field.name" />
 
       <select *ngIf="field.type === 'dropdown'" class="form-control" [formControlName]="field.name">
+        <option value="">--Select an option--</option>
         <option *ngFor="let opt of field.options || []" [value]="opt">{{ opt }}</option>
       </select>
 
-      <!-- Radio -->
-      <div *ngIf="field.type === 'radio-group'">
-        <div *ngFor="let opt of field.options || []" class="form-check">
+      <div *ngIf="field.type === 'radio'"> <div *ngFor="let opt of field.options || []" class="form-check">
           <input class="form-check-input" type="radio" [id]="field.name + opt" [disabled]="true" />
           <label class="form-check-label" [for]="field.name + opt">{{ opt }}</label>
         </div>
       </div>
 
-      <!-- Checkbox -->
-      <div *ngIf="field.type === 'checkbox-group'">
-        <div *ngFor="let opt of field.options || []" class="form-check">
+      <div *ngIf="field.type === 'checkbox'"> <div *ngFor="let opt of field.options || []" class="form-check">
           <input class="form-check-input" type="checkbox" [id]="field.name + opt" [disabled]="true" />
           <label class="form-check-label" [for]="field.name + opt">{{ opt }}</label>
         </div>

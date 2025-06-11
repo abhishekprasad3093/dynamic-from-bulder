@@ -3,18 +3,17 @@
   <form [formGroup]="fillForm" (ngSubmit)="onSubmit()">
     <div *ngFor="let field of formFields" class="mb-3">
       <label class="form-label">{{ field.label }}</label>
+      <span *ngIf="field.required" class="text-danger">*</span> <small *ngIf="field.helpText" class="form-text text-muted ms-2">{{ field.helpText }}</small>
 
       <input *ngIf="field.type === 'text'" class="form-control" [formControlName]="field.name" />
       <textarea *ngIf="field.type === 'textarea'" class="form-control" [formControlName]="field.name"></textarea>
       <input *ngIf="field.type === 'date'" type="date" class="form-control" [formControlName]="field.name" />
 
       <select *ngIf="field.type === 'dropdown'" class="form-control" [formControlName]="field.name">
-        <option *ngFor="let opt of field.options || []" [value]="opt">{{ opt }}</option>
+        <option value="">--Select an option--</option> <option *ngFor="let opt of field.options || []" [value]="opt">{{ opt }}</option>
       </select>
 
-      <!-- Radio -->
-      <div *ngIf="field.type === 'radio-group'">
-        <div *ngFor="let opt of field.options || []" class="form-check">
+      <div *ngIf="field.type === 'radio'"> <div *ngFor="let opt of field.options || []" class="form-check">
           <input class="form-check-input" type="radio"
                  [value]="opt"
                  [formControlName]="field.name"
@@ -23,14 +22,25 @@
         </div>
       </div>
 
-      <!-- Checkbox -->
-      <div *ngIf="field.type === 'checkbox-group'">
-        <div *ngFor="let opt of field.options || []" class="form-check">
+      <div *ngIf="field.type === 'checkbox'"> <div *ngFor="let opt of field.options || []" class="form-check">
           <input class="form-check-input" type="checkbox"
                  [id]="field.name + opt"
-                 [checked]="checkboxValues[field.name]?.includes(opt)"
+                 [checked]="fillForm.get(field.name)?.value?.includes(opt)"
                  (change)="onCheckboxChange(field.name, opt, $event)" />
           <label class="form-check-label" [for]="field.name + opt">{{ opt }}</label>
+        </div>
+      </div>
+
+      <div *ngIf="fillForm.get(field.name)?.invalid && (fillForm.get(field.name)?.dirty || fillForm.get(field.name)?.touched)"
+           class="text-danger">
+        <div *ngIf="field.required && fillForm.get(field.name)?.errors?.['required']">
+          {{ field.label }} is required.
+        </div>
+        <div *ngIf="field.minLength && fillForm.get(field.name)?.errors?.['minlength']">
+          Minimum length is {{ field.minLength }} characters.
+        </div>
+        <div *ngIf="field.maxLength && fillForm.get(field.name)?.errors?.['maxlength']">
+          Maximum length is {{ field.maxLength }} characters.
         </div>
       </div>
     </div>
