@@ -1,0 +1,139 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Toolbox -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">Form Field Types</div>
+        <div
+          class="card-body"
+          cdkDropList
+          id="toolbox"
+          [cdkDropListData]="availableFields"
+          [cdkDropListConnectedTo]="['formArea']"
+          (cdkDropListDropped)="onDropToBuilder($event)"
+        >
+          <div
+            class="btn btn-outline-secondary d-block mb-2"
+            *ngFor="let field of availableFields"
+            cdkDrag
+          >
+            {{ field.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Area -->
+    <div class="col-md-8">
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <span>Your Form</span>
+          <div>
+            <button
+              class="btn btn-success btn-sm me-2"
+              (click)="previewForm()"
+              [disabled]="(formFields$ | async)?.length === 0"
+            >
+              Preview Form
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="clearForm()">
+              Clear Form
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="card-body"
+          cdkDropList
+          id="formArea"
+          [cdkDropListData]="(formFields$ | async) || []"
+          [cdkDropListConnectedTo]="['toolbox']"
+          (cdkDropListDropped)="onDropToBuilder($event)"
+        >
+          <ng-container *ngIf="formFields$ | async as formFields">
+            <div
+              class="card mb-3"
+              *ngFor="let field of formFields; let i = index"
+              cdkDrag
+            >
+              <div class="card-body">
+                <strong>{{ field.type }}</strong>
+                <input
+                  [(ngModel)]="field.label"
+                  (ngModelChange)="updateField(i, field)"
+                  placeholder="Label"
+                  class="form-control mb-2"
+                />
+                <input
+                  [(ngModel)]="field.helpText"
+                  (ngModelChange)="updateField(i, field)"
+                  placeholder="Help text"
+                  class="form-control mb-2"
+                />
+                <div class="form-check mb-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [(ngModel)]="field.required"
+                    (ngModelChange)="updateField(i, field)"
+                  />
+                  <label class="form-check-label">Required</label>
+                </div>
+                <div
+                  *ngIf="field.type === 'text' || field.type === 'textarea'"
+                  class="mb-2"
+                >
+                  <input
+                    type="number"
+                    [(ngModel)]="field.minLength"
+                    (ngModelChange)="updateField(i, field)"
+                    class="form-control mb-2"
+                    placeholder="Min Length"
+                  />
+                  <input
+                    type="number"
+                    [(ngModel)]="field.maxLength"
+                    (ngModelChange)="updateField(i, field)"
+                    class="form-control mb-2"
+                    placeholder="Max Length"
+                  />
+                </div>
+                <div
+                  *ngIf="
+                    field.type === 'dropdown' ||
+                    field.type === 'radio' ||
+                    field.type === 'checkbox'
+                  "
+                >
+                  <input
+                    [(ngModel)]="field.optionsRaw"
+                    (ngModelChange)="
+                      updateOptions(field); updateField(i, field)
+                    "
+                    class="form-control"
+                    placeholder="Options (comma separated)"
+                  />
+                </div>
+                <button
+                  class="btn btn-danger btn-sm mt-2"
+                  (click)="removeField(i)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+
+            <div
+              *ngIf="formFields.length === 0"
+              class="text-muted mt-3 text-center"
+            >
+              Drag fields here to start building your form.
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

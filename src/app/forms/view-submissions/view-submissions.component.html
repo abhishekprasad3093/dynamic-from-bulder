@@ -1,0 +1,26 @@
+<div class="container mt-4">
+    <h3 class="mb-4">Submitted Responses</h3>
+  
+    <div *ngIf="submissions.length === 0" class="alert alert-info">
+      No submissions found.
+    </div>
+  
+    <div *ngFor="let submission of submissions; let i = index" class="card mb-3">
+      <div class="card-header">
+        Submission #{{ i + 1 }}
+      </div>
+      <div class="card-body">
+        <div *ngFor="let fieldKey of fieldNames" class="mb-2">
+          <strong>{{ getFieldLabel(fieldKey) }}:</strong>
+          <ng-container *ngIf="!isArray(getFieldValue(submission, fieldKey))">
+            {{ getFieldValue(submission, fieldKey) }}
+          </ng-container>
+          <ul *ngIf="isArray(getFieldValue(submission, fieldKey))">
+            <li *ngFor="let item of getFieldValue(submission, fieldKey)">
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>

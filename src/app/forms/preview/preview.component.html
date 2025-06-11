@@ -1,0 +1,56 @@
+<div class="container mt-4">
+    <h3 class="mb-4">Form Preview</h3>
+  
+    <form [formGroup]="previewForm">
+      <div *ngFor="let field of formFields" class="mb-3">
+        <label>{{ field.label }} <span *ngIf="field.required">*</span></label>
+        <small class="text-muted d-block">{{ field.helpText }}</small>
+  
+        <ng-container [ngSwitch]="field.type">
+          <input *ngSwitchCase="'text'" class="form-control" [formControlName]="field.name" />
+          <textarea *ngSwitchCase="'textarea'" class="form-control" [formControlName]="field.name"></textarea>
+          <input *ngSwitchCase="'date'" type="date" class="form-control" [formControlName]="field.name" />
+          
+          <select *ngSwitchCase="'dropdown'" class="form-control" [formControlName]="field.name">
+            <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+          </select>
+  
+          <div *ngSwitchCase="'radio'">
+            <div *ngFor="let opt of field.options" class="form-check">
+              <input
+                type="radio"
+                class="form-check-input"
+                [value]="opt"
+                [formControlName]="field.name"
+                [id]="field.name + '_' + opt"
+              />
+              <label class="form-check-label" [for]="field.name + '_' + opt">{{ opt }}</label>
+            </div>
+          </div>
+  
+          <div *ngSwitchCase="'checkbox'">
+            <div *ngFor="let opt of field.options" class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isChecked(field.name, opt)"
+                (change)="toggleCheckbox(field.name, opt)"
+                [id]="field.name + '_' + opt"
+              />
+              <label class="form-check-label" [for]="field.name + '_' + opt">{{ opt }}</label>
+            </div>
+          </div>
+        </ng-container>
+  
+        <div
+          *ngIf="previewForm.get(field.name)?.invalid && previewForm.get(field.name)?.touched"
+          class="text-danger mt-1"
+        >
+          This field is required.
+        </div>
+      </div>
+  
+      <button class="btn btn-secondary mt-3" type="button" (click)="goBack()">← Back to Builder</button>
+    </form>
+  </div>
+  
