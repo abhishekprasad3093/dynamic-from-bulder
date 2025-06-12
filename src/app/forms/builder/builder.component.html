@@ -44,7 +44,7 @@
              [cdkDropListData]="formFields"
              [cdkDropListConnectedTo]="['toolbox']"
              (cdkDropListDropped)="onDropToBuilder($event)">
-          <div class="card mb-3" *ngFor="let field of formFields; let i = index">
+          <div class="card mb-3 field-added" *ngFor="let field of formFields; let i = index; trackBy: trackByFn">
             <div class="card-body">
               <div class="row mb-2">
                 <div class="col-md-6">

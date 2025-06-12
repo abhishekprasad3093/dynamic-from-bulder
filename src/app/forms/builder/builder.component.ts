@@ -93,4 +93,8 @@ export class BuilderComponent implements OnInit {
   fillForm(): void {
     this.router.navigate(['/forms/fill']);
   }
+
+  trackByFn(index: number, field: FormField): string | undefined {
+    return field.name; 
+  }
 }

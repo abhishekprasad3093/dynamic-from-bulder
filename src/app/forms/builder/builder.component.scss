@@ -1,3 +1,11 @@
 .card {
     cursor: grab;
   }
+
+  @keyframes fadeIn {
+    from { background-color: #e3f2fd; }
+    to { background-color: transparent; }
+  }
+  .field-added {
+    animation: fadeIn 1s ease;
+  }
